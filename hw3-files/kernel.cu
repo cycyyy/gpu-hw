@@ -35,12 +35,12 @@ __global__ void mysgemm(int m, int n, int k, const float *A, const float *B, flo
 	__shared__ float Acache[TILE_SIZE][TILE_SIZE];
 	__shared__ float Bcache[TILE_SIZE][TILE_SIZE];
 
-	Acache[tx][ty] = A[a + k * ty + tx];
-	Bcache[tx][ty] = B[b + n * ty + tx];
+	Acache[ty][tx] = A[a + k * ty + tx];
+	Bcache[ty][tx] = B[b + n * ty + tx];
 	__syncthreads();
 
 	for (int i=0; i<TILE_SIZE; i++) {
-	    Sum += Acache[i][ty] * Bcache[tx][i];
+	    Sum += Acache[ty][i] * Bcache[i][tx];
 	}
 	__syncthreads();
      }
